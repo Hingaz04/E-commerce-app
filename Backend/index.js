@@ -110,6 +110,33 @@ app.post("/addproduct", async (req, res) => {
   }
 });
 
+//Creating API for deleting Products
+app.post("/removeproduct", async (req, res) => {
+  try {
+    const deletedProduct = await Product.findOneAndDelete({ id: req.body.id });
+    if (!deletedProduct) {
+      console.log("Product not found");
+      return res
+        .status(404)
+        .json({ success: false, error: "Product not found" });
+    }
+    console.log("Product removed:", deletedProduct);
+    res.json({
+      success: true,
+      name: deletedProduct.name,
+    });
+  } catch (error) {
+    console.error("Error removing product:", error);
+    res.status(500).json({ success: false, error: "Error removing product" });
+  }
+});
+
+// Creating API for getting all the products
+app.get("/allproducts", async (req, res) => {
+  let products = await Product.find({});
+  console.log("All products Fetched");
+  res.send(products);
+});
 app.listen(port, (error) => {
   if (!error) {
     console.log("Server running on port " + port);
