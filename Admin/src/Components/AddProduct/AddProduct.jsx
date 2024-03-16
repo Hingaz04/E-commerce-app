@@ -3,10 +3,9 @@ import { useState } from "react";
 import upload_area from "../../assets/upload_area.svg";
 
 const AddProduct = () => {
-  const [image, setImage] = useState(false);
+  const [image, setImage] = useState(null); // Initialize image state as null
   const [productDetails, setProductDetails] = useState({
     name: "",
-    image: "",
     category: "women",
     new_price: "",
     old_price: "",
@@ -26,34 +25,41 @@ const AddProduct = () => {
     let product = productDetails;
 
     let formData = new FormData();
-    formData.append("product", image);
+    formData.append("image", image); // Use "image" as the key for FormData
 
-    await fetch("http://localhost:4000/upload", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-      body: formData,
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        responseData = data;
+    try {
+      const uploadResponse = await fetch("http://localhost:4000/upload", {
+        method: "POST",
+        body: formData,
       });
+      const uploadData = await uploadResponse.json();
+      responseData = uploadData;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return; // Stop further execution if image upload fails
+    }
+
     if (responseData.success) {
       product.image = responseData.image_url;
       console.log(product);
-      await fetch("https://localhost:4000/addproduct", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(product),
-      }).then((resp) =>
-        resp.json().then((data) => {
-          data.success ? alert("Product Added") : alert("Failed");
-        })
-      );
+      try {
+        const addProductResponse = await fetch(
+          "http://localhost:4000/addproduct",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(product),
+          }
+        );
+        const addProductData = await addProductResponse.json();
+        addProductData.success ? alert("Product Added") : alert("Failed");
+      } catch (error) {
+        console.error("Error adding product:", error);
+        return; // Stop further execution if product addition fails
+      }
     }
   };
   return (
