@@ -58,7 +58,7 @@ const AddProduct = () => {
         addProductData.success ? alert("Product Added") : alert("Failed");
       } catch (error) {
         console.error("Error adding product:", error);
-        return; // Stop further execution if product addition fails
+        return;
       }
     }
   };

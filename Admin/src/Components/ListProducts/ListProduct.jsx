@@ -49,10 +49,11 @@ const ListProduct = () => {
               className="listproduct-format-main listproduct-format"
             >
               <img
-                src={product.image}
+                src={`http://localhost:4000${product.image}`}
                 alt=""
                 className="listproduct-product-icon"
               />
+
               <p>{product.name}</p>
               <p>${product.old_price}</p>
               <p>${product.new_price}</p>

@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
-const { log } = require("console");
 
 app.use(express.json());
 app.use(cors());
@@ -34,12 +33,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Creating upload endpoint for images
-app.use("/images", express.static(path.join(__dirname, "uploads", "images")));
+app.use("/images", express.static(path.join(__dirname, "upload", "images")));
 
 app.post("/upload", upload.single("image"), (req, res) => {
   res.json({
     success: 1,
-    image_url: `http://localhost:${port}/images/${req.file.filename}`,
+    image_url: `/images/${req.file.filename}`,
   });
 });
 
